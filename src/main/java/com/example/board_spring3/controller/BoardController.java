@@ -1,8 +1,8 @@
 package com.example.board_spring3.controller;
 
-import com.example.board_spring3.dto.BoardRequestDto;
-import com.example.board_spring3.dto.BoardResponseDto;
 import com.example.board_spring3.dto.ResponseDto;
+import com.example.board_spring3.dto.board.BoardRequestDto;
+import com.example.board_spring3.dto.board.BoardResponseDto;
 import com.example.board_spring3.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +17,8 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping
-    public BoardResponseDto createBoard (@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request){
-        return boardService.createBoard(boardRequestDto, request);
+    public BoardResponseDto createBoard (@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest httpServletRequest){
+        return boardService.createBoard(boardRequestDto, httpServletRequest);
     }
 
     @GetMapping
@@ -31,13 +31,13 @@ public class BoardController {
     }
 
     @PutMapping("/{id}")
-    public BoardResponseDto updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request){
-        return boardService.updateBoard(id, boardRequestDto, request);
+    public BoardResponseDto updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto boardRequestDto, HttpServletRequest httpServletRequest){
+        return boardService.updateBoard(id, boardRequestDto, httpServletRequest);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseDto deleteBoard (@PathVariable Long id, HttpServletRequest request){
-        return boardService.deleteBoard(id, request);
+    public ResponseDto deleteBoard (@PathVariable Long id, HttpServletRequest httpServletRequest){
+        return boardService.deleteBoard(id, httpServletRequest);
     }
 }
 

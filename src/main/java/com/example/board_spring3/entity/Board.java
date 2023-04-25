@@ -1,6 +1,6 @@
 package com.example.board_spring3.entity;
 
-import com.example.board_spring3.dto.BoardRequestDto;
+import com.example.board_spring3.dto.board.BoardRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

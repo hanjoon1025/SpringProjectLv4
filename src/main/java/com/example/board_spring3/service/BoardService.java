@@ -1,10 +1,10 @@
 package com.example.board_spring3.service;
 
-import com.example.board_spring3.dto.BoardRequestDto;
-import com.example.board_spring3.dto.BoardResponseDto;
 import com.example.board_spring3.dto.ResponseDto;
+import com.example.board_spring3.dto.board.BoardRequestDto;
+import com.example.board_spring3.dto.board.BoardResponseDto;
 import com.example.board_spring3.entity.Board;
-import com.example.board_spring3.entity.User;
+import com.example.board_spring3.entity.Users;
 import com.example.board_spring3.jwt.JwtUtil;
 import com.example.board_spring3.repository.BoardRepository;
 import com.example.board_spring3.repository.UserRepository;
@@ -39,10 +39,10 @@ public class BoardService {
                 throw new IllegalArgumentException("Token Error");
             }
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-            User user = checkUser(claims);
+            Users users = checkUser(claims);
 
             // 요청받은 DTO 로 DB에 저장할 객체 만들기
-            Board board = new Board(boardRequestDto, user.getId(), user.getUsername());
+            Board board = new Board(boardRequestDto, users.getId(), users.getUsername());
             Long id = boardRepository.saveAndFlush(board).getId();
 
             return new BoardResponseDto(checkBoard(id));
@@ -74,10 +74,10 @@ public class BoardService {
                 throw new IllegalArgumentException("Token Error");
             }
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-            User user = checkUser(claims);
+            Users users = checkUser(claims);
             Board board = checkBoard(id);
 
-            if (board.getUsername().equals(user.getUsername())) {
+            if (board.getUsername().equals(users.getUsername())) {
                 board.update(boardRequestDto);
             }
 
@@ -99,10 +99,10 @@ public class BoardService {
                 throw new IllegalArgumentException("Token Error");
             }
 
-            User user = checkUser(claims);
+            Users users = checkUser(claims);
            Board board = checkBoard(id);
 
-            if (board.getUsername().equals(user.getUsername())) {
+            if (board.getUsername().equals(users.getUsername())) {
                 boardRepository.delete(board);
             }
 
@@ -117,7 +117,7 @@ public class BoardService {
                 () -> new IllegalArgumentException("해당 포스트가 없습니다!!!")
         );
     }
-    private User checkUser(Claims claims) {
+    private Users checkUser(Claims claims) {
         return userRepository.findByUsername(claims.getSubject()).orElseThrow(
                 () -> new IllegalArgumentException("사용자가 존재하지 않습니다!!!")
         );

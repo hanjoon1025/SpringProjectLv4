@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity(name="users")
 @NoArgsConstructor
-public class User {
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    public User(String username, String password, UserRoleEnum role) {
+    public Users(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.role = role;

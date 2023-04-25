@@ -1,8 +1,7 @@
-package com.example.board_spring3.dto;
+package com.example.board_spring3.dto.board;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package com.example.board_spring3.dto;
+package com.example.board_spring3.dto.board;
 
 import com.example.board_spring3.entity.Board;
 import com.example.board_spring3.entity.Timestamped;

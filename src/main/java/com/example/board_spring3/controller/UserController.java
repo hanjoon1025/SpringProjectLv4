@@ -1,8 +1,8 @@
 package com.example.board_spring3.controller;
 
-import com.example.board_spring3.dto.LoginRequestDto;
 import com.example.board_spring3.dto.ResponseDto;
-import com.example.board_spring3.dto.SignupRequestDto;
+import com.example.board_spring3.dto.user.LoginRequestDto;
+import com.example.board_spring3.dto.user.SignupRequestDto;
 import com.example.board_spring3.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

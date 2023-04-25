@@ -1,4 +1,4 @@
-package com.example.board_spring3.dto;
+package com.example.board_spring3.dto.user;
 
 import lombok.Getter;
 import lombok.Setter;

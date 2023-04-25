@@ -1,10 +1,10 @@
 package com.example.board_spring3.service;
 
-import com.example.board_spring3.dto.LoginRequestDto;
 import com.example.board_spring3.dto.ResponseDto;
-import com.example.board_spring3.dto.SignupRequestDto;
-import com.example.board_spring3.entity.User;
+import com.example.board_spring3.dto.user.LoginRequestDto;
+import com.example.board_spring3.dto.user.SignupRequestDto;
 import com.example.board_spring3.entity.UserRoleEnum;
+import com.example.board_spring3.entity.Users;
 import com.example.board_spring3.jwt.JwtUtil;
 import com.example.board_spring3.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,7 +36,7 @@ public class UserService {
         }
 
         //회원 중복 확인
-        Optional<User> found = userRepository.findByUsername(username);
+        Optional<Users> found = userRepository.findByUsername(username);
         if (found.isPresent()){
             return new ResponseDto("같은 아이디가 이미 있습니다.", 100);
         }
@@ -50,8 +50,8 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(username, password, role);
-        userRepository.save(user);
+        Users users = new Users(username, password, role);
+        userRepository.save(users);
 
         ResponseDto responseDto = new ResponseDto("회원가입 성공", 200);
         return new ResponseDto("회원가입 성공", 200);
@@ -62,13 +62,13 @@ public class UserService {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
-        User user = userRepository.findByUsername(username).orElseThrow(
+        Users users = userRepository.findByUsername(username).orElseThrow(
                 ()-> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
-        if(!user.getPassword().equals(password)){
+        if(!users.getPassword().equals(password)){
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(users.getUsername()));
 
         return new ResponseDto("로그인 성공", 200);
     }
