@@ -4,6 +4,7 @@ import com.example.board_spring3.comment.dto.CommentRequestDto;
 import com.example.board_spring3.comment.dto.CommentResponseDto;
 import com.example.board_spring3.board.entity.Board;
 import com.example.board_spring3.comment.entity.Comment;
+import com.example.board_spring3.global.dto.ResponseDto;
 import com.example.board_spring3.user.entity.Users;
 import com.example.board_spring3.global.jwt.JwtUtil;
 import com.example.board_spring3.board.repository.BoardRepository;
@@ -71,11 +72,32 @@ public class CommentService {
 
             return new CommentResponseDto(comment);
         }
-        throw new IllegalArgumentException("댓글을 작성 할 수 없습니다.");
+        throw new IllegalArgumentException("댓글을 작성 수 없습니다.");
     }
     @Transactional
-    public CommentResponseDto deleteComment(Long id, HttpServletRequest httpServletRequest){
-        return new CommentResponseDto(null);
+    public ResponseDto deleteComment(Long id, HttpServletRequest httpServletRequest){
+        String token = jwtUtil.resolveToken(httpServletRequest);
+        Claims claims;
+
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("삭제 실패: Token Error");
+            }
+
+            Users users = checkUsers(claims);
+            Comment comment = checkComment(id);
+
+            if(!comment.getUsers().equals(users)){
+                throw new IllegalArgumentException("해당 댓글을 삭제할 권한이 없습니다.");
+
+            }
+            commentRepository.deleteById(id);
+            return new ResponseDto("삭제 성공",200);
+
+        }
+        return new ResponseDto("유효하지 않은 토큰입니다.",100);
     }
 
     private Users checkUsers(Claims claims){

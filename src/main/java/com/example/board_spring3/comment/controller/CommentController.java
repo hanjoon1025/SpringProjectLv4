@@ -3,6 +3,7 @@ package com.example.board_spring3.comment.controller;
 import com.example.board_spring3.comment.dto.CommentRequestDto;
 import com.example.board_spring3.comment.dto.CommentResponseDto;
 import com.example.board_spring3.comment.service.CommentService;
+import com.example.board_spring3.global.dto.ResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    public CommentResponseDto deleteComment (@PathVariable Long id, HttpServletRequest httpServletRequest){
+    public ResponseDto deleteComment (@PathVariable Long id, HttpServletRequest httpServletRequest){
         return commentService.deleteComment(id, httpServletRequest);
     }
 }
