@@ -43,13 +43,9 @@ public class CommentService {
             Board board = checkBord(commentRequestDto.getBoard_id());
 
             Comment comment = new Comment(users,board, commentRequestDto);
-
             commentRepository.save(comment);
 
-            board.getCommentList().add(comment);
-            boardRepository.save(board);
-
-            return new CommentResponseDto();
+            return new CommentResponseDto(comment);
         }
         throw new IllegalArgumentException("게시글을 작성 할 수 없습니다.");
     }
@@ -71,11 +67,18 @@ public class CommentService {
             Board board = checkBord(commentRequestDto.getBoard_id());
 
             Comment comment = new Comment(users, board, commentRequestDto);
+            commentRepository.save(comment);
+
 
             return new CommentResponseDto(comment);
         }
         throw new IllegalArgumentException("댓글을 작성 할 수 없습니다.");
     }
+    @Transactional
+    public CommentResponseDto deleteComment(Long id, HttpServletRequest httpServletRequest){
+        return new CommentResponseDto(null);
+    }
+
     private Users checkUsers(Claims claims){
         Users users = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                 ()-> new IllegalArgumentException("사용자가 존재하지 않습니다.")
@@ -88,11 +91,6 @@ public class CommentService {
                 ()-> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
         return board;
-    }
-
-    @Transactional
-    public CommentResponseDto deleteComment(Long id, HttpServletRequest httpServletRequest){
-        return new CommentResponseDto(null);
     }
 
     private Comment checkComment(Long id){

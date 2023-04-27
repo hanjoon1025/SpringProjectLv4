@@ -114,12 +114,12 @@ public class BoardService {
 
     private Board checkBoard(Long id){
         return  boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 포스트가 없습니다!!!")
+                () -> new IllegalArgumentException("해당 포스트가 없습니다.")
         );
     }
     private Users checkUser(Claims claims) {
         return userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("사용자가 존재하지 않습니다!!!")
+                () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
         );
     }
 }

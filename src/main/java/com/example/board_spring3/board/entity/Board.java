@@ -22,7 +22,7 @@ public class Board extends Timestamped {
     private Long id;
 
     @Column
-    private Long users;
+    private Long useId;
 
     @Column
     private String title;
@@ -36,10 +36,10 @@ public class Board extends Timestamped {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    public Board(BoardRequestDto boardRequestDto, Long users, String username){
+    public Board(BoardRequestDto boardRequestDto, Long useId, String username){
         this.title = boardRequestDto.getTitle();
         this.content = boardRequestDto.getContent();
-        this.users = users;
+        this.useId = useId;
         this.username = username;
     }
 
