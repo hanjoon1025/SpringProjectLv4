@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,7 +21,7 @@ public class Board extends Timestamped {
     private Long id;
 
     @Column
-    private Long users;
+    private Long userId;
 
     @Column
     private String title;
@@ -33,13 +32,14 @@ public class Board extends Timestamped {
     @Column
     private String username;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> commentList = new ArrayList<>();
+    @OneToMany
+    @OrderBy
+    private List<Comment> commentList;
 
-    public Board(BoardRequestDto boardRequestDto, Long users, String username){
+    public Board(BoardRequestDto boardRequestDto, Long userId, String username){
         this.title = boardRequestDto.getTitle();
         this.content = boardRequestDto.getContent();
-        this.users = users;
+        this.userId = userId;
         this.username = username;
     }
 
@@ -48,7 +48,7 @@ public class Board extends Timestamped {
         this.title = boardRequestDto.getTitle();
     }
 
-    public void addComment(Comment comment) {
-        this.commentList.add(comment);
+    public void addComment(List<Comment> commentList) {
+        this.commentList = commentList;
     }
 }
