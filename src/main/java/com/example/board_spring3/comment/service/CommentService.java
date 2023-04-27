@@ -44,18 +44,14 @@ public class CommentService {
 
             Comment comment = new Comment(users,board, commentRequestDto);
 
-            List<Comment> commentList = board.getCommentList();
-            commentList.add(comment);
-            board.addComment(commentList);
-
             commentRepository.save(comment);
+
+            board.getCommentList().add(comment);
             boardRepository.save(board);
 
-//            Comment savedComment = commentRepository.save(comment);
-//            boardRepository.save(board);
             return new CommentResponseDto();
         }
-        throw new IllegalArgumentException("Token not found.");
+        throw new IllegalArgumentException("게시글을 작성 할 수 없습니다.");
     }
 
     @Transactional

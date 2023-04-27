@@ -2,6 +2,7 @@ package com.example.board_spring3.comment.entity;
 
 import com.example.board_spring3.comment.dto.CommentRequestDto;
 import com.example.board_spring3.board.entity.Board;
+import com.example.board_spring3.comment.dto.CommentResponseDto;
 import com.example.board_spring3.global.entity.Timestamped;
 import com.example.board_spring3.user.entity.Users;
 import jakarta.persistence.*;
@@ -32,6 +33,9 @@ public class Comment extends Timestamped {
     public Comment (Users users, Board board, CommentRequestDto commentRequestDto){
         this.users = users;
         this.board = board;
+        this.content = commentRequestDto.getContent();
+    }
+       public void updateContent(CommentRequestDto commentRequestDto) {
         this.content = commentRequestDto.getContent();
     }
 }
