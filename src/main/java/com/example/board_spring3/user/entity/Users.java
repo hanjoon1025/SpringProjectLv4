@@ -1,5 +1,6 @@
 package com.example.board_spring3.user.entity;
 
+import com.example.board_spring3.user.dto.UserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,9 @@ public class Users {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    public Users(String username, String password, UserRoleEnum role) {
-        this.username = username;
-        this.password = password;
+    public Users(UserRequestDto userRequestDto, UserRoleEnum role) {
+        this.username = userRequestDto.getUsername();
+        this.password = userRequestDto.getPassword();
         this.role = role;
     }
 }
