@@ -1,11 +1,9 @@
 package com.example.board_spring3.board.controller;
 
+import com.example.board_spring3.global.dto.ResponseDto;
 import com.example.board_spring3.board.dto.BoardRequestDto;
 import com.example.board_spring3.board.dto.BoardResponseDto;
 import com.example.board_spring3.board.service.BoardService;
-import com.example.board_spring3.global.dto.InterfaceDto;
-import com.example.board_spring3.global.dto.ResponseDto;
-import com.example.board_spring3.global.dto.StatusResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +17,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping
-    public InterfaceDto createBoard (@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest httpServletRequest){
+    public BoardResponseDto createBoard (@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest httpServletRequest){
         return boardService.createBoard(boardRequestDto, httpServletRequest);
     }
 
@@ -33,12 +31,12 @@ public class BoardController {
     }
 
     @PutMapping("/{id}")
-    public InterfaceDto updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto boardRequestDto, HttpServletRequest httpServletRequest){
+    public BoardResponseDto updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto boardRequestDto, HttpServletRequest httpServletRequest){
         return boardService.updateBoard(id, boardRequestDto, httpServletRequest);
     }
 
     @DeleteMapping("/{id}")
-    public StatusResponseDto deleteBoard (@PathVariable Long id, HttpServletRequest httpServletRequest){
+    public ResponseDto deleteBoard (@PathVariable Long id, HttpServletRequest httpServletRequest){
         return boardService.deleteBoard(id, httpServletRequest);
     }
 }

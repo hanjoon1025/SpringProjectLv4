@@ -44,12 +44,12 @@ public class JwtUtil {
         return null;
     }
 
-    public String createToken(String username, UserRoleEnum userRoleEnum){
+    public String createToken(String username){
         Date date = new Date();
 
         return BEARER_PREFIX + Jwts.builder()
                         .setSubject(username)
-                        .claim(AUTHORIZATION_KEY, userRoleEnum)
+                        .claim(AUTHORIZATION_KEY, UserRoleEnum.USER)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)

@@ -1,8 +1,8 @@
 package com.example.board_spring3.user.controller;
 
 import com.example.board_spring3.global.dto.ResponseDto;
-import com.example.board_spring3.global.dto.StatusResponseDto;
-import com.example.board_spring3.user.dto.UserRequestDto;
+import com.example.board_spring3.user.dto.LoginRequestDto;
+import com.example.board_spring3.user.dto.SignupRequestDto;
 import com.example.board_spring3.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,12 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/signup")
-    public StatusResponseDto signup(@RequestBody UserRequestDto userRequestDto){
-        return userService.signUp(userRequestDto);
+    public ResponseDto signup(@RequestBody SignupRequestDto signupRequestDto){
+        return userService.signUp(signupRequestDto);
     }
     @ResponseBody
     @PostMapping("/login")
-    public StatusResponseDto login (@RequestBody UserRequestDto userRequestDto, HttpServletResponse httpServletResponse){
-        return userService.login(userRequestDto, httpServletResponse);
+    public ResponseDto login (@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
+        return userService.login(loginRequestDto, response);
     }
 }

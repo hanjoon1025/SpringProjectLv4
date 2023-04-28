@@ -1,7 +1,8 @@
 package com.example.board_spring3.comment.entity;
 
-import com.example.board_spring3.board.entity.Board;
 import com.example.board_spring3.comment.dto.CommentRequestDto;
+import com.example.board_spring3.board.entity.Board;
+import com.example.board_spring3.comment.dto.CommentResponseDto;
 import com.example.board_spring3.global.entity.Timestamped;
 import com.example.board_spring3.user.entity.Users;
 import jakarta.persistence.*;
@@ -11,16 +12,17 @@ import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Comment extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "COMMENT_ID")
+    @Column(name = "COMMENT_ID")
     private Long id;
 
     @Column(nullable = false)
-    private String comment;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name="USER_ID", nullable = false)
@@ -30,20 +32,12 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "BOARD_ID", nullable = false)
     private Board board;
 
-    public Comment (CommentRequestDto commentRequestDto){
-        this.comment = commentRequestDto.getComment();
-    }
-
-    public void setBoard(Board board){
-        this.board = board;
-        board.getCommentList().add(this);
-    }
-
-       public void updateComment(CommentRequestDto commentRequestDto) {
-        this.comment = commentRequestDto.getComment();
-    }
-
-    public void setUsers(Users users){
+    public Comment (Users users, Board board, CommentRequestDto commentRequestDto){
         this.users = users;
+        this.board = board;
+        this.content = commentRequestDto.getContent();
+    }
+       public void updateContent(CommentRequestDto commentRequestDto) {
+        this.content = commentRequestDto.getContent();
     }
 }
