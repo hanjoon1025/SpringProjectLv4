@@ -4,6 +4,8 @@ import com.example.board_spring3.board.dto.BoardRequestDto;
 import com.example.board_spring3.board.dto.BoardResponseDto;
 import com.example.board_spring3.board.entity.Board;
 import com.example.board_spring3.board.repository.BoardRepository;
+import com.example.board_spring3.comment.dto.CommentResponseDto;
+import com.example.board_spring3.comment.entity.Comment;
 import com.example.board_spring3.global.dto.InterfaceDto;
 import com.example.board_spring3.global.dto.ResponseDto;
 import com.example.board_spring3.global.dto.StatusResponseDto;
@@ -19,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,12 +51,26 @@ public class BoardService {
     }
 
     public BoardResponseDto getBoard(Long id) {
-        return new BoardResponseDto(checkBoard(id));
+        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+
+        List<CommentResponseDto> comments = new ArrayList<>();
+        for (Comment comment : board.getComment()) {
+            comments.add(new CommentResponseDto(comment));
+        }
+
+        return new BoardResponseDto(board, comments);
     }
 
     @Transactional(readOnly = true)
     public List<BoardResponseDto> getBoardList() {
-         return boardRepository.findAll().stream().map(BoardResponseDto::new).collect(Collectors.toList());
+        List<Board> boardList = boardRepository.findAllByOrderByModifiedAtDesc();
+
+        List<BoardResponseDto> boards = new ArrayList<>();
+
+        for (Board board : boardList){
+            boards.add(new BoardResponseDto(board));
+        }
+        return boards;
     }
 
     @Transactional
@@ -64,7 +81,7 @@ public class BoardService {
         Claims claims = checkToken(httpServletRequest);
 
         Board board = boardRepository.findById(id).orElseThrow(
-                ()-> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+                ()-> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다")
         );
 
         Users users = getUserByToken(token);
@@ -88,7 +105,7 @@ public class BoardService {
         );
 
         Board board = boardRepository.findById(id).orElseThrow(
-                ()-> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+                ()-> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다")
         );
 
         if(users.getUsername().equals(board.getUsers().getUsername()) || users.getRole() == UserRoleEnum.ADMIN){

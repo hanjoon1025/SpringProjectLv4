@@ -34,22 +34,22 @@ public class CommentService {
         String token = jwtUtil.resolveToken(httpServletRequest);
 
         Board board = boardRepository.findById(commentRequestDto.getBoard_id()).orElseThrow(
-                ()-> new IllegalArgumentException("존재하지 않는 게시글입니다.")
+                () -> new IllegalArgumentException("존재하지 않는 게시글입니다.")
         );
 
         Users users = getUserByToken(token);
 
-        if(users != null){
-        Comment comment = new Comment(commentRequestDto);
+        if (users != null) {
+            Comment comment = new Comment(commentRequestDto);
 
-        comment.setBoard(board);
-        comment.setUsers(users);
+            comment.setBoard(board);
+            comment.setUsers(users);
 
-        commentRepository.save(comment);
+            commentRepository.save(comment);
 
-        return new CommentResponseDto(comment);
-        }else {
-            return new StatusResponseDto("사용할 수 없는 토큰입니다.",HttpStatus.BAD_REQUEST);
+            return new CommentResponseDto(comment);
+        } else {
+            return new StatusResponseDto("사용할 수 없는 토큰입니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -61,15 +61,15 @@ public class CommentService {
         Users users = getUserByToken(token);
 
         Comment comment = commentRepository.findById(id).orElseThrow(
-                ()-> new IllegalArgumentException("해당 댓글이 없습니다.")
+                () -> new IllegalArgumentException("해당 댓글이 없습니다.")
         );
 
-        if(comment.getUsers().getUsername().equals(users.getUsername()) || users.getRole() == UserRoleEnum.ADMIN){
+        if (comment.getUsers().getUsername().equals(users.getUsername()) || users.getRole() == UserRoleEnum.ADMIN) {
             comment.updateComment(commentRequestDto);
 
             return new CommentResponseDto(comment);
         } else {
-          return new StatusResponseDto("해당 댓글의 작성자가 아닙니다",HttpStatus.BAD_REQUEST);
+            return new StatusResponseDto("해당 댓글의 작성자가 아닙니다", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -79,9 +79,9 @@ public class CommentService {
         Users users = getUserByToken(token);
 
         Comment comment = commentRepository.findById(id).orElseThrow(
-                ()-> new IllegalArgumentException("존재하지 않는 댓글입니다.")
+                () -> new IllegalArgumentException("존재하지 않는 댓글입니다.")
         );
-        if (comment.getUsers().getUsername().equals(users.getUsername()) || users.getRole() == UserRoleEnum.ADMIN){
+        if (comment.getUsers().getUsername().equals(users.getUsername()) || users.getRole() == UserRoleEnum.ADMIN) {
             commentRepository.delete(comment);
 
             return new StatusResponseDto("해당 댓글을 삭제하였습니다.", HttpStatus.OK);
@@ -93,17 +93,16 @@ public class CommentService {
     private Users getUserByToken(String token) {
         Claims claims;
 
-        if(token != null){
-            if(jwtUtil.validateToken(token)){
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
-            }else{
+            } else {
                 throw new IllegalArgumentException("Token Error");
             }
 
-            Users users = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+            return userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
             );
-            return users;
         }
         return null;
     }

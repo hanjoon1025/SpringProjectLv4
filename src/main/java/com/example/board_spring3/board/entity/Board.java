@@ -20,11 +20,7 @@ public class Board extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BOARD_ID")
     private Long id;
-
-//    @Column
-//    private Long userId;
 
     @Column
     private String title;
@@ -32,15 +28,12 @@ public class Board extends Timestamped {
     @Column
     private String content;
 
-//    @Column
-//    private String username;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USERNAME")
     private Users users;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Comment> commentList = new ArrayList<>();
+    private List<Comment> comment = new ArrayList<>();
 
     public Board(BoardRequestDto boardRequestDto, Users users){
         this.title = boardRequestDto.getTitle();

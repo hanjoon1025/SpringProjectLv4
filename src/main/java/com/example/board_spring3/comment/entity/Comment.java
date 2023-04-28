@@ -26,7 +26,7 @@ public class Comment extends Timestamped {
     @JoinColumn(name="USER_ID", nullable = false)
     private Users users;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID", nullable = false)
     private Board board;
 
@@ -36,7 +36,7 @@ public class Comment extends Timestamped {
 
     public void setBoard(Board board){
         this.board = board;
-        board.getCommentList().add(this);
+        board.getComment().add(this);
     }
 
        public void updateComment(CommentRequestDto commentRequestDto) {
