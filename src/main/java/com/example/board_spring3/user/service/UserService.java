@@ -2,14 +2,14 @@ package com.example.board_spring3.user.service;
 
 import com.example.board_spring3.global.dto.InterfaceDto;
 import com.example.board_spring3.global.dto.StatusResponseDto;
+import com.example.board_spring3.global.exception.ErrorException;
 import com.example.board_spring3.global.exception.ExceptionEnum;
-import com.example.board_spring3.global.exception.ServiceException;
+import com.example.board_spring3.global.exception.ResponseException;
 import com.example.board_spring3.global.jwt.JwtUtil;
 import com.example.board_spring3.user.dto.UserRequestDto;
 import com.example.board_spring3.user.entity.UserRoleEnum;
 import com.example.board_spring3.user.entity.Users;
 import com.example.board_spring3.user.repository.UserRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,12 +30,12 @@ public class UserService {
     public InterfaceDto signUp(UserRequestDto userRequestDto) {
         Optional<Users> check = userRepository.findByUsername(userRequestDto.getUsername());
         if (check.isPresent()) {
-            return new ServiceException(ExceptionEnum.USERS_DUPLICATION);
+            return new ResponseException(ExceptionEnum.USERS_DUPLICATION);
         }
         UserRoleEnum userRoleEnum = UserRoleEnum.USER;
         if (userRequestDto.isAdmin()) {
             if (!userRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+                throw new ErrorException(ExceptionEnum.TOKEN_NOT_FOUND);
             }
             userRoleEnum = UserRoleEnum.ADMIN;
         }
@@ -50,11 +50,11 @@ public class UserService {
         String password = userRequestDto.getPassword();
 
         Users users = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 아이디가 존재하지 않습니다.")
+                () -> new ErrorException(ExceptionEnum.USER_NOT_FOUND)
         );
 
         if (!users.getPassword().equals(password)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new ErrorException(ExceptionEnum.INVALID_PASSWORD);
         }
         httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(users.getUsername(), users.getRole()));
 

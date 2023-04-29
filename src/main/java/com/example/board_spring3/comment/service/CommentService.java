@@ -8,8 +8,9 @@ import com.example.board_spring3.comment.entity.Comment;
 import com.example.board_spring3.comment.repository.CommentRepository;
 import com.example.board_spring3.global.dto.InterfaceDto;
 import com.example.board_spring3.global.dto.StatusResponseDto;
+import com.example.board_spring3.global.exception.ErrorException;
 import com.example.board_spring3.global.exception.ExceptionEnum;
-import com.example.board_spring3.global.exception.ServiceException;
+import com.example.board_spring3.global.exception.ResponseException;
 import com.example.board_spring3.global.jwt.JwtUtil;
 import com.example.board_spring3.user.entity.UserRoleEnum;
 import com.example.board_spring3.user.entity.Users;
@@ -36,7 +37,7 @@ public class CommentService {
         String token = jwtUtil.resolveToken(httpServletRequest);
 
         Board board = boardRepository.findById(commentRequestDto.getBoard_id()).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
+                () -> new ErrorException(ExceptionEnum.BOARD_NOT_FOUND)
         );
 
         Users users = getUserByToken(token);
@@ -51,7 +52,7 @@ public class CommentService {
 
             return new CommentResponseDto(comment);
         } else {
-            return new ServiceException(ExceptionEnum.TOKEN_NOT_FOUND);
+            return new ResponseException(ExceptionEnum.TOKEN_NOT_FOUND);
         }
     }
 
@@ -63,7 +64,7 @@ public class CommentService {
         Users users = getUserByToken(token);
 
         Comment comment = commentRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+                () -> new ErrorException(ExceptionEnum.COMMENT_NOT_FOUND)
         );
 
         if (comment.getUsers().getUsername().equals(users.getUsername()) || users.getRole() == UserRoleEnum.ADMIN) {
@@ -71,7 +72,7 @@ public class CommentService {
 
             return new CommentResponseDto(comment);
         } else {
-            return new ServiceException(ExceptionEnum.NOT_ALLOWED_AUTHORIZATIONS);
+            return new ResponseException(ExceptionEnum.NOT_ALLOWED_AUTHORIZATIONS);
         }
     }
 
@@ -81,14 +82,14 @@ public class CommentService {
         Users users = getUserByToken(token);
 
         Comment comment = commentRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+                () -> new ErrorException(ExceptionEnum.COMMENT_NOT_FOUND)
         );
         if (comment.getUsers().getUsername().equals(users.getUsername()) || users.getRole() == UserRoleEnum.ADMIN) {
             commentRepository.delete(comment);
 
             return new StatusResponseDto("해당 댓글을 삭제하였습니다.", HttpStatus.OK.value());
         } else {
-            return new ServiceException(ExceptionEnum.NOT_ALLOWED_AUTHORIZATIONS);
+            return new ResponseException(ExceptionEnum.NOT_ALLOWED_AUTHORIZATIONS);
         }
     }
 
@@ -103,7 +104,7 @@ public class CommentService {
             }
 
             return userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("등록된 아이디가 존재하지 않습니다.")
+                    () -> new ErrorException(ExceptionEnum.USER_NOT_FOUND)
             );
         }
         return null;

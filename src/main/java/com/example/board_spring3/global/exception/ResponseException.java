@@ -4,12 +4,12 @@ import com.example.board_spring3.global.dto.InterfaceDto;
 import lombok.Getter;
 
 @Getter
-public class ServiceException implements InterfaceDto{
+public class ResponseException implements InterfaceDto{
 
     private final String message;
     private final int status;
 
-    public ServiceException(ExceptionEnum exceptionEnum){
+    public ResponseException(ExceptionEnum exceptionEnum){
         this.message = exceptionEnum.getMessage();
         this.status = exceptionEnum.getStatus();
     }
