@@ -26,7 +26,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    public StatusResponseDto deleteComment (@PathVariable Long id, HttpServletRequest httpServletRequest){
+    public InterfaceDto deleteComment (@PathVariable Long id, HttpServletRequest httpServletRequest){
         return commentService.deleteComment(id, httpServletRequest);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.board_spring3.user.controller;
 
+import com.example.board_spring3.global.dto.InterfaceDto;
 import com.example.board_spring3.global.dto.StatusResponseDto;
 import com.example.board_spring3.user.dto.UserRequestDto;
 import com.example.board_spring3.user.service.UserService;
@@ -16,12 +17,12 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/signup")
-    public StatusResponseDto signup(@RequestBody UserRequestDto userRequestDto){
+    public InterfaceDto signup(@RequestBody UserRequestDto userRequestDto){
         return userService.signUp(userRequestDto);
     }
     @ResponseBody
     @PostMapping("/login")
-    public StatusResponseDto login (@RequestBody UserRequestDto userRequestDto, HttpServletResponse httpServletResponse){
+    public InterfaceDto login (@RequestBody UserRequestDto userRequestDto, HttpServletResponse httpServletResponse){
         return userService.login(userRequestDto, httpServletResponse);
     }
 }

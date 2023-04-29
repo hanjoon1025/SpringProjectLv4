@@ -1,5 +1,6 @@
 package com.example.board_spring3.global.dto;
 
+import com.example.board_spring3.global.exception.ServiceException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

@@ -1,11 +1,15 @@
 package com.example.board_spring3.user.service;
 
+import com.example.board_spring3.global.dto.InterfaceDto;
 import com.example.board_spring3.global.dto.StatusResponseDto;
+import com.example.board_spring3.global.exception.ExceptionEnum;
+import com.example.board_spring3.global.exception.ServiceException;
 import com.example.board_spring3.global.jwt.JwtUtil;
 import com.example.board_spring3.user.dto.UserRequestDto;
 import com.example.board_spring3.user.entity.UserRoleEnum;
 import com.example.board_spring3.user.entity.Users;
 import com.example.board_spring3.user.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,30 +27,30 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public StatusResponseDto signUp(UserRequestDto userRequestDto) {
+    public InterfaceDto signUp(UserRequestDto userRequestDto) {
         Optional<Users> check = userRepository.findByUsername(userRequestDto.getUsername());
         if (check.isPresent()) {
-            return new StatusResponseDto("같은 아이디가 이미 있습니다.", HttpStatus.ALREADY_REPORTED);
+            return new ServiceException(ExceptionEnum.USERS_DUPLICATION);
         }
         UserRoleEnum userRoleEnum = UserRoleEnum.USER;
         if (userRequestDto.isAdmin()) {
             if (!userRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+                throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
             }
             userRoleEnum = UserRoleEnum.ADMIN;
         }
         Users users = new Users(userRequestDto, userRoleEnum);
         userRepository.save(users);
-        return new StatusResponseDto("회원가입 성공", HttpStatus.OK);
+        return new StatusResponseDto("회원가입 성공", HttpStatus.OK.value());
     }
 
     @Transactional(readOnly = true)
-    public StatusResponseDto login(UserRequestDto userRequestDto, HttpServletResponse httpServletResponse) {
+    public InterfaceDto login(UserRequestDto userRequestDto, HttpServletResponse httpServletResponse) {
         String username = userRequestDto.getUsername();
         String password = userRequestDto.getPassword();
 
         Users users = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+                () -> new IllegalArgumentException("등록된 아이디가 존재하지 않습니다.")
         );
 
         if (!users.getPassword().equals(password)) {
@@ -54,6 +58,6 @@ public class UserService {
         }
         httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(users.getUsername(), users.getRole()));
 
-        return new StatusResponseDto("로그인 성공", HttpStatus.OK);
+        return new StatusResponseDto("로그인 성공", HttpStatus.OK.value());
     }
 }
