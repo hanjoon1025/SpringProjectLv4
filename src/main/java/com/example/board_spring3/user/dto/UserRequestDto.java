@@ -1,9 +1,9 @@
 package com.example.board_spring3.user.dto;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.validation.constraints.Pattern;
 
 @Setter
 @Getter

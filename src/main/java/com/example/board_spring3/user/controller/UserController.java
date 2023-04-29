@@ -1,6 +1,5 @@
 package com.example.board_spring3.user.controller;
 
-import com.example.board_spring3.global.dto.ResponseDto;
 import com.example.board_spring3.global.dto.StatusResponseDto;
 import com.example.board_spring3.user.dto.UserRequestDto;
 import com.example.board_spring3.user.service.UserService;
