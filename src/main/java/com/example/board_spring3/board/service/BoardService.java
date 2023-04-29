@@ -68,7 +68,11 @@ public class BoardService {
         List<BoardResponseDto> boards = new ArrayList<>();
 
         for (Board board : boardList){
-            boards.add(new BoardResponseDto(board));
+            List<CommentResponseDto> comments = new ArrayList<>();
+            for (Comment comment : board.getComment()) {
+                comments.add(new CommentResponseDto(comment));
+            }
+            boards.add(new BoardResponseDto(board, comments));
         }
         return boards;
     }
@@ -132,16 +136,6 @@ public class BoardService {
             return users;
         }
         return null;
-    }
-    private Board checkBoard(Long id){
-        return  boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 포스트가 없습니다.")
-        );
-    }
-    private Users checkUser(Claims claims) {
-        return userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-        );
     }
 
     private Claims checkToken(HttpServletRequest httpServletRequest) throws IllegalArgumentException {

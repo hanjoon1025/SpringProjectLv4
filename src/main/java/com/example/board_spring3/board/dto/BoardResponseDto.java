@@ -16,7 +16,7 @@ public class BoardResponseDto implements InterfaceDto {
     private final String username;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
-    private List<CommentResponseDto> commentResponseDtoList;
+    private List<CommentResponseDto> commentList;
 
     public BoardResponseDto(Board board){
         this.id = board.getId();
@@ -26,13 +26,13 @@ public class BoardResponseDto implements InterfaceDto {
         this.createdAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
     }
-    public BoardResponseDto(Board board, List<CommentResponseDto> commentResponseDtoList){
+    public BoardResponseDto(Board board, List<CommentResponseDto> commentList){
         this.id = board.getId();
         this.title = board.getTitle();
         this.username = board.getUsers().getUsername();
         this.content = board.getContent();
         this.createdAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
-        this.commentResponseDtoList = commentResponseDtoList;
+        this.commentList = commentList;
     }
 }
