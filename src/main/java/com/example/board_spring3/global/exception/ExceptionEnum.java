@@ -13,7 +13,10 @@ public enum ExceptionEnum {
     TOKEN_NOT_FOUND("유효하지 않은 토큰입니다.", HttpStatus.NOT_FOUND.value()),
     NOT_ALLOWED_AUTHORIZATIONS("작성자만 삭제/수정할 수 있습니다.", HttpStatus.FORBIDDEN.value()),
     BOARD_NOT_FOUND("해당 게시글이 존재하지 않습니다.", HttpStatus.NOT_FOUND.value()),
-    COMMENT_NOT_FOUND("해당 댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND.value());
+    COMMENT_NOT_FOUND("해당 댓글이 존재하지 않습니다.", HttpStatus.NOT_FOUND.value()),
+    INTERNAL_SERVER_ERROR("서버 에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR.value()),
+    UNKNOWN_ERROR("알 수 없는 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR.value());
+
 
     private final String message;
     private final int status;

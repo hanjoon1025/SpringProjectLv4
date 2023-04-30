@@ -9,8 +9,8 @@ import com.example.board_spring3.comment.repository.CommentRepository;
 import com.example.board_spring3.global.dto.InterfaceDto;
 import com.example.board_spring3.global.dto.StatusResponseDto;
 import com.example.board_spring3.global.exception.ErrorException;
+import com.example.board_spring3.global.exception.ErrorResponseDto;
 import com.example.board_spring3.global.exception.ExceptionEnum;
-import com.example.board_spring3.global.exception.ResponseException;
 import com.example.board_spring3.global.jwt.JwtUtil;
 import com.example.board_spring3.user.entity.UserRoleEnum;
 import com.example.board_spring3.user.entity.Users;
@@ -52,7 +52,7 @@ public class CommentService {
 
             return new CommentResponseDto(comment);
         } else {
-            return new ResponseException(ExceptionEnum.TOKEN_NOT_FOUND);
+            return new ErrorResponseDto(ExceptionEnum.TOKEN_NOT_FOUND);
         }
     }
 
@@ -72,7 +72,7 @@ public class CommentService {
 
             return new CommentResponseDto(comment);
         } else {
-            return new ResponseException(ExceptionEnum.NOT_ALLOWED_AUTHORIZATIONS);
+            return new ErrorResponseDto(ExceptionEnum.NOT_ALLOWED_AUTHORIZATIONS);
         }
     }
 
@@ -89,7 +89,7 @@ public class CommentService {
 
             return new StatusResponseDto("해당 댓글을 삭제하였습니다.", HttpStatus.OK.value());
         } else {
-            return new ResponseException(ExceptionEnum.NOT_ALLOWED_AUTHORIZATIONS);
+            return new ErrorResponseDto(ExceptionEnum.NOT_ALLOWED_AUTHORIZATIONS);
         }
     }
 
@@ -100,7 +100,7 @@ public class CommentService {
             if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
-                throw new IllegalArgumentException("Token Error");
+                throw new ErrorException(ExceptionEnum.TOKEN_NOT_FOUND);
             }
 
             return userRepository.findByUsername(claims.getSubject()).orElseThrow(

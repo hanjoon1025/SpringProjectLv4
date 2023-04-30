@@ -3,8 +3,8 @@ package com.example.board_spring3.user.service;
 import com.example.board_spring3.global.dto.InterfaceDto;
 import com.example.board_spring3.global.dto.StatusResponseDto;
 import com.example.board_spring3.global.exception.ErrorException;
+import com.example.board_spring3.global.exception.ErrorResponseDto;
 import com.example.board_spring3.global.exception.ExceptionEnum;
-import com.example.board_spring3.global.exception.ResponseException;
 import com.example.board_spring3.global.jwt.JwtUtil;
 import com.example.board_spring3.user.dto.UserRequestDto;
 import com.example.board_spring3.user.entity.UserRoleEnum;
@@ -30,7 +30,7 @@ public class UserService {
     public InterfaceDto signUp(UserRequestDto userRequestDto) {
         Optional<Users> check = userRepository.findByUsername(userRequestDto.getUsername());
         if (check.isPresent()) {
-            return new ResponseException(ExceptionEnum.USERS_DUPLICATION);
+            return new ErrorResponseDto(ExceptionEnum.USERS_DUPLICATION);
         }
         UserRoleEnum userRoleEnum = UserRoleEnum.USER;
         if (userRequestDto.isAdmin()) {
@@ -46,18 +46,23 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public InterfaceDto login(UserRequestDto userRequestDto, HttpServletResponse httpServletResponse) {
-        String username = userRequestDto.getUsername();
-        String password = userRequestDto.getPassword();
+        try {
+            String username = userRequestDto.getUsername();
+            String password = userRequestDto.getPassword();
 
-        Users users = userRepository.findByUsername(username).orElseThrow(
-                () -> new ErrorException(ExceptionEnum.USER_NOT_FOUND)
-        );
+            Users users = userRepository.findByUsername(username).orElseThrow(
+                    () -> new ErrorException(ExceptionEnum.USER_NOT_FOUND)
+            );
 
-        if (!users.getPassword().equals(password)) {
-            throw new ErrorException(ExceptionEnum.INVALID_PASSWORD);
+            if (!users.getPassword().equals(password)) {
+                throw new ErrorException(ExceptionEnum.INVALID_PASSWORD);
+            }
+            httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(users.getUsername(), users.getRole()));
+
+            return new StatusResponseDto("로그인 성공", HttpStatus.OK.value());
+        } catch (ErrorException e) {
+            return new ErrorResponseDto(e.getExceptionEnum().getMessage(), e.getExceptionEnum().getStatus());
         }
-        httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(users.getUsername(), users.getRole()));
-
-        return new StatusResponseDto("로그인 성공", HttpStatus.OK.value());
     }
 }
+

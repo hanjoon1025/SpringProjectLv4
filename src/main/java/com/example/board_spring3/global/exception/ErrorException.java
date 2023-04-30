@@ -3,13 +3,26 @@ package com.example.board_spring3.global.exception;
 import lombok.Getter;
 
 @Getter
-public class ErrorException extends RuntimeException {
+public class ErrorException extends RuntimeException{
+    private final ExceptionEnum exceptionEnum;
 
-    private final String message;
-    private final int status;
+    public ErrorException(ExceptionEnum exceptionEnum) {
+        super(exceptionEnum.getMessage());
+        this.exceptionEnum = exceptionEnum;
+    }
 
-    public ErrorException(ExceptionEnum exceptionEnum){
-        this.message = exceptionEnum.getMessage();
-        this.status = exceptionEnum.getStatus();
+    public int getStatus() {
+        return this.exceptionEnum.getStatus();
     }
 }
+//@Getter
+//public class ErrorException extends RuntimeException {
+//
+//    private final String message;
+//    private final int status;
+//
+//    public ErrorException(ExceptionEnum exceptionEnum){
+//        this.message = exceptionEnum.getMessage();
+//        this.status = exceptionEnum.getStatus();
+//    }
+//}

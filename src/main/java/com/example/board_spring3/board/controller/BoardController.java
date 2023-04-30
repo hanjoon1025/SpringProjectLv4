@@ -29,7 +29,7 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public BoardResponseDto getBoard(@PathVariable Long id){
+    public InterfaceDto getBoard(@PathVariable Long id){
         return boardService.getBoard(id);
     }
 
