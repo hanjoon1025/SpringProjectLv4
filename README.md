@@ -5,4 +5,4 @@ https://docs.google.com/spreadsheets/d/1l2-bo3mGxUfqSCjK5-49ZooxzNDzOtY5DxEs0lTR
 
 
 ### ERD
-https://user-images.githubusercontent.com/128972031/236137689-242e1d15-783e-48cd-b3e6-1d1b187e6c3e.PNG
+![image](https://user-images.githubusercontent.com/128885464/236160132-a8bf1ff4-c778-4e0e-a0db-ba64bceaff4e.png)
