@@ -3,7 +3,6 @@ package com.example.board_spring4.global.security;
 import com.example.board_spring4.global.exception.CustomAccessDeniedHandler;
 import com.example.board_spring4.global.exception.CustomAuthenticationEntryPoint;
 import com.example.board_spring4.global.jwt.JwtAuthFilter;
-import com.example.board_spring4.global.jwt.JwtAuthenticationFilter;
 import com.example.board_spring4.global.jwt.JwtUtil;
 import com.example.board_spring4.user.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ public class WebSecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final UserDetailsServiceImpl userDetailsService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtUtil jwtUtil;
 
     @Bean
