@@ -1,6 +1,5 @@
 package com.example.board_spring4.user.service;
 
-import com.example.board_spring4.global.dto.InterfaceDto;
 import com.example.board_spring4.global.dto.StatusResponseDto;
 import com.example.board_spring4.global.exception.ErrorException;
 import com.example.board_spring4.global.exception.ErrorResponseDto;
@@ -13,6 +12,8 @@ import com.example.board_spring4.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +26,13 @@ public class UserService {
     private final UserRepository userRepository;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public InterfaceDto signUp(UserRequestDto userRequestDto) {
+    public ResponseEntity<?> signUp(UserRequestDto userRequestDto) {
         Optional<Users> check = userRepository.findByUsername(userRequestDto.getUsername());
         if (check.isPresent()) {
-            return new ErrorResponseDto(ExceptionEnum.USERS_DUPLICATION);
+            return ResponseEntity.badRequest().body(new ErrorResponseDto(ExceptionEnum.USERS_DUPLICATION));
         }
         UserRoleEnum userRoleEnum = UserRoleEnum.USER;
         if (userRequestDto.isAdmin()) {
@@ -39,30 +41,30 @@ public class UserService {
             }
             userRoleEnum = UserRoleEnum.ADMIN;
         }
+
+        // 비밀번호 암호화 추가
+        userRequestDto.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         Users users = new Users(userRequestDto, userRoleEnum);
         userRepository.save(users);
-        return new StatusResponseDto("회원가입 성공", HttpStatus.OK.value());
+        return ResponseEntity.ok(new StatusResponseDto("회원가입 성공", HttpStatus.OK.value()));
     }
 
     @Transactional(readOnly = true)
-    public InterfaceDto login(UserRequestDto userRequestDto, HttpServletResponse httpServletResponse) {
-        try {
-            String username = userRequestDto.getUsername();
-            String password = userRequestDto.getPassword();
+    public ResponseEntity<?> login(UserRequestDto userRequestDto, HttpServletResponse httpServletResponse) {
+        String username = userRequestDto.getUsername();
+        String password = userRequestDto.getPassword();
 
-            Users users = userRepository.findByUsername(username).orElseThrow(
-                    () -> new ErrorException(ExceptionEnum.USER_NOT_FOUND)
-            );
+        Users users = userRepository.findByUsername(username).orElseThrow(
+                () -> new ErrorException(ExceptionEnum.USER_NOT_FOUND)
+        );
 
-            if (!users.getPassword().equals(password)) {
-                throw new ErrorException(ExceptionEnum.INVALID_PASSWORD);
-            }
-            httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(users.getUsername(), users.getRole()));
-
-            return new StatusResponseDto("로그인 성공", HttpStatus.OK.value());
-        } catch (ErrorException e) {
-            return new ErrorResponseDto(e.getExceptionEnum().getMessage(), e.getExceptionEnum().getStatus());
+        // 비밀번호 확인
+        if (!passwordEncoder.matches(password, users.getPassword())) {
+            throw new ErrorException(ExceptionEnum.INVALID_PASSWORD);
         }
+
+        httpServletResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(users.getUsername(), users.getRole()));
+
+        return ResponseEntity.ok(new StatusResponseDto("로그인 성공", HttpStatus.OK.value()));
     }
 }
-
